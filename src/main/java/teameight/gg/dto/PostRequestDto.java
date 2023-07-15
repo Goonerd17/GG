@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class PostRequestDto {
 
     private String title;
-    private String description;
+    private String content;
     private String like;
     private String dislike;
 }
