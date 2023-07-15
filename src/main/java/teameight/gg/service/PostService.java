@@ -1,10 +1,13 @@
 package teameight.gg.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teameight.gg.dto.PostRequestDto;
 import teameight.gg.dto.PostResponseDto;
+import teameight.gg.dto.PostSearchCondition;
 import teameight.gg.entity.Post;
 import teameight.gg.entity.User;
 import teameight.gg.repository.PostRepository;
@@ -58,9 +61,14 @@ public class PostService {
 
     private Post confirmPost(Long postId, User user) {
         Post post = findPost(postId);
-        if (!(user.getId() == post.getUser().getId() || user.getRole().getAuthority() == "ROLE_ADMIN"))
-            throw new IllegalArgumentException("해당 게시글 작성자 혹은 관리자만 수정,삭제할 수 있습니다");
+        if (!(user.getId() == post.getUser().getId()))
+            throw new IllegalArgumentException("해당 게시글 작성자만 수정,삭제할 수 있습니다");
         return post;
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<PostResponseDto> searchPost(PostSearchCondition condition, Pageable pageable) {
+        return postRepository.serachPostBySlice(condition, pageable);
     }
 }
 

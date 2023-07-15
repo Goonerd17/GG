@@ -35,7 +35,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         response.setCharacterEncoding("UTF-8");
 
         try {
-            response.getWriter().write(objectMapper.writeValueAsString(error(errorCodeEnum.getMessage(), errorCodeEnum.getStatus().value())));
+            response.getWriter().write(objectMapper.writeValueAsString(tokenError(errorCodeEnum)));
         } catch (IOException e) {
             e.printStackTrace();
         }

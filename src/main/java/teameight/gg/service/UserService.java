@@ -1,9 +1,9 @@
 package teameight.gg.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import teameight.gg.dto.SignupRequestDto;
 import teameight.gg.entity.User;
 import teameight.gg.entity.UserRoleEnum;
@@ -12,13 +12,13 @@ import teameight.gg.repository.UserRepository;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private static final String ADMIN_TOKEN = "ASDdsfkjfigdajdaejifalkdjfDFDAK";
+    private static final String ADMIN_TOKEN = "88hajoAdministarator";
 
     public String signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
@@ -37,7 +37,6 @@ public class UserService {
     private void checkDuplicatedUsername(String username) {
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
-            log.error("중복사용자 존재");
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
     }

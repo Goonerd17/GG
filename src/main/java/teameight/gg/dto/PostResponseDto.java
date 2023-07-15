@@ -6,6 +6,7 @@ import teameight.gg.entity.Post;
 
 import java.time.LocalDateTime;
 
+
 @NoArgsConstructor
 @Getter
 public class PostResponseDto {
@@ -15,8 +16,7 @@ public class PostResponseDto {
     private String username;
     private String content;
     private LocalDateTime createdAt;
-    private String like;
-    private String dislike;
+    private int likes;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -24,7 +24,6 @@ public class PostResponseDto {
         this.username = post.getUsername();
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
-        this.like = post.getLike();
-        this.dislike= post.getDislike();
+        this.likes = post.getLikes().size();
     }
 }

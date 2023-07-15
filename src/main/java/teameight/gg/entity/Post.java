@@ -6,6 +6,12 @@ import lombok.NoArgsConstructor;
 import teameight.gg.dto.PostRequestDto;
 
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -14,7 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Post extends Timestamped {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "post_id")
     private Long id;
 
@@ -27,8 +33,8 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    private String like;
-    private String dislike;
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -44,5 +50,15 @@ public class Post extends Timestamped {
     public void update(PostRequestDto postRequestDto) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+    }
+
+    public void addLikeToPost(Like like) {
+        likes.add(like);
+        like.setPost(this);
+    }
+
+    public void deleteLikeToPost(Like like) {
+        likes.remove(like);
+        like.setPost(this);
     }
 }
