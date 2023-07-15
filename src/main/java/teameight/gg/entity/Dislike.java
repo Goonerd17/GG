@@ -6,16 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 
-import static jakarta.persistence.FetchType.*;
-import static jakarta.persistence.GenerationType.*;
-import static org.hibernate.annotations.OnDeleteAction.*;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static org.hibernate.annotations.OnDeleteAction.CASCADE;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "likes")
-public class Like {
+@Table(name = "dislikes")
+public class Dislike {
 
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -29,7 +29,7 @@ public class Like {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Like(Post post, User user) {
+    public Dislike(Post post, User user) {
         this.post = post;
         this.user = user;
     }

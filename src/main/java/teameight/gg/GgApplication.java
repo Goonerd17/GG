@@ -13,7 +13,5 @@ public class GgApplication {
 
         SpringApplication.run(GgApplication.class, args);
 
-
     }
-
 }

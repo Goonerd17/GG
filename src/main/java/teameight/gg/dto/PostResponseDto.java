@@ -17,6 +17,7 @@ public class PostResponseDto {
     private String content;
     private LocalDateTime createdAt;
     private long liked;
+    private long disliked;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -25,5 +26,6 @@ public class PostResponseDto {
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
         this.liked = post.getLiked();
+        this.disliked = post.getDisliked();
     }
 }

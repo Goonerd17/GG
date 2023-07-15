@@ -3,6 +3,8 @@ package teameight.gg.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import teameight.gg.dto.PostRequestDto;
 
 
@@ -13,6 +15,7 @@ import java.util.Set;
 
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.PROTECTED;
+import static org.hibernate.annotations.OnDeleteAction.*;
 
 @Entity
 @Getter
@@ -35,8 +38,11 @@ public class Post extends Timestamped {
 
     private long liked;
 
+    private long disliked;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @OnDelete(action = CASCADE)
     private User user;
 
     public Post(PostRequestDto postRequestDto, User user) {
@@ -45,6 +51,7 @@ public class Post extends Timestamped {
         this.content = postRequestDto.getContent();
         this.user = user;
         this.liked = 0;
+        this.disliked = 0;
     }
 
     public void update(PostRequestDto postRequestDto) {
@@ -59,4 +66,10 @@ public class Post extends Timestamped {
     public void decreaseLike() {
         this.liked -= 1;
     }
+
+    public void increaseDislike() {
+        this.disliked += 1;
+    }
+
+    public void decreaseDislike() { this.disliked -= 1; }
 }

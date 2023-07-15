@@ -30,18 +30,12 @@ public class PostController {
         return ok(postService.createPost(postRequestDto, userDetailsImpl.getUser()));
     }
 
-    @PostMapping("/{postId}/like")
-    public ApiResponse<?> updateLike(@PathVariable Long postId,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return ok(postService.updateLike(postId, userDetailsImpl.getUser()));
-    }
-
     @GetMapping("/{postId}")
     public ApiResponse<?> readOnePost(@PathVariable Long postId) {
         return ok(postService.getSinglePost(postId));
     }
 
-    @PatchMapping("/{postId}")
+    @PutMapping("/{postId}")
     public ApiResponse<?> modifyPost(@PathVariable Long postId,
                                      @RequestBody PostRequestDto postRequestDto,
                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {

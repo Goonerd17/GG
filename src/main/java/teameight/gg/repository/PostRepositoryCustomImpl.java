@@ -27,6 +27,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
         List<Post> result = query
                 .selectFrom(post)
                 .where(usernameEq(condition.getUsername()), titleEq(condition.getTitle()))
+                .orderBy(post.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
