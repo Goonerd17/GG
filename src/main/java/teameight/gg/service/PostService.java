@@ -8,12 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import teameight.gg.dto.PostRequestDto;
 import teameight.gg.dto.PostResponseDto;
 import teameight.gg.dto.PostSearchCondition;
+import teameight.gg.entity.Like;
 import teameight.gg.entity.Post;
 import teameight.gg.entity.User;
+import teameight.gg.repository.LikeRepository;
 import teameight.gg.repository.PostRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -21,18 +20,11 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
 
     public PostResponseDto createPost(PostRequestDto postRequestDto, User user) {
         Post post = postRepository.save(new Post(postRequestDto, user));
         return new PostResponseDto(post);
-    }
-
-    @Transactional(readOnly = true)
-    public List<PostResponseDto> getPosts() {
-        List<PostResponseDto> collect = postRepository.findAllByOrderByCreatedAt().stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
-        return collect;
     }
 
     @Transactional(readOnly = true)
@@ -69,6 +61,34 @@ public class PostService {
     @Transactional(readOnly = true)
     public Slice<PostResponseDto> searchPost(PostSearchCondition condition, Pageable pageable) {
         return postRepository.serachPostBySlice(condition, pageable);
+    }
+
+    public PostResponseDto updateLike(Long postId, User user) {
+        Post post = findPost(postId);
+
+        if (!isLikedPost(post, user)) {
+            post.increaseLike();
+            createLike(post, user);
+            return new PostResponseDto(post);
+        }
+
+        post.decreaseLike();
+        removeLike(post, user);
+        return new PostResponseDto(post);
+    }
+
+    public boolean isLikedPost(Post post, User user) {
+        return likeRepository.findByPostAndUser(post, user).isPresent();
+    }
+
+    public void createLike(Post post, User user) {
+        Like like = new Like(post, user);
+        likeRepository.save(like);
+    }
+
+    public void removeLike(Post post, User user) {
+        Like like = likeRepository.findByPostAndUser(post, user).orElseThrow();
+        likeRepository.delete(like);
     }
 }
 

@@ -33,8 +33,7 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
+    private long liked;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -45,6 +44,7 @@ public class Post extends Timestamped {
         this.username = user.getUsername();
         this.content = postRequestDto.getContent();
         this.user = user;
+        this.liked = 0;
     }
 
     public void update(PostRequestDto postRequestDto) {
@@ -52,13 +52,11 @@ public class Post extends Timestamped {
         this.content = postRequestDto.getContent();
     }
 
-    public void addLikeToPost(Like like) {
-        likes.add(like);
-        like.setPost(this);
+    public void increaseLike() {
+        this.liked += 1;
     }
 
-    public void deleteLikeToPost(Like like) {
-        likes.remove(like);
-        like.setPost(this);
+    public void decreaseLike() {
+        this.liked -= 1;
     }
 }

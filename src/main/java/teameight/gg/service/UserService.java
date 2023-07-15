@@ -18,14 +18,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private static final String ADMIN_TOKEN = "88hajoAdministarator";
 
     public String signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
         checkDuplicatedUsername(username);
-        UserRoleEnum role = getUserRoleEnum(signupRequestDto);
+        UserRoleEnum role = UserRoleEnum.USER;
 
         User user = new User(username, password, role);
         userRepository.save(user);
@@ -39,17 +38,5 @@ public class UserService {
         if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
-    }
-
-    // 사용자 ROLE 확인 (관리자인 경우, ADMIN / 사옹자인 경우, USER 부여)
-    private UserRoleEnum getUserRoleEnum(SignupRequestDto signupRequestDto) {
-        UserRoleEnum role = UserRoleEnum.USER;
-        if (signupRequestDto.isAdmin()) {
-            if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
-            }
-            role = UserRoleEnum.ADMIN;
-        }
-        return role;
     }
 }

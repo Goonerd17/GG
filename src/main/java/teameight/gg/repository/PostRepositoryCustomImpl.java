@@ -35,9 +35,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
         for (Post post : result) {
             content.add(new PostResponseDto(post));
         }
-
         return checkEndPage(pageable, content);
-
     }
 
     private BooleanExpression usernameEq(String usernameCond) {
@@ -54,7 +52,6 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
             hasNext = true;
             content.remove(pageable.getPageSize());
         }
-
         return new SliceImpl<>(content, pageable, hasNext);
     }
 }
