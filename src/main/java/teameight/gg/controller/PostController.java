@@ -24,15 +24,15 @@ public class PostController {
         return ok(postService.searchPost(condition, pageable));
     }
 
+    @GetMapping("/{postId}")
+    public ApiResponse<?> readOnePost(@PathVariable Long postId) {
+        return ok(postService.getSinglePost(postId));
+    }
+
     @PostMapping("/newpost")
     public ApiResponse<?> createPost(@RequestBody PostRequestDto postRequestDto,
                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return ok(postService.createPost(postRequestDto, userDetailsImpl.getUser()));
-    }
-
-    @GetMapping("/{postId}")
-    public ApiResponse<?> readOnePost(@PathVariable Long postId) {
-        return ok(postService.getSinglePost(postId));
     }
 
     @PutMapping("/{postId}")
@@ -47,6 +47,4 @@ public class PostController {
                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return ok(postService.deletePost(postId, userDetailsImpl.getUser()));
     }
-
-
 }
