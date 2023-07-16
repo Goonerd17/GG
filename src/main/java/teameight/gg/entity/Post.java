@@ -1,17 +1,16 @@
 package teameight.gg.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import teameight.gg.dto.PostRequestDto;
 
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.PROTECTED;
@@ -19,6 +18,8 @@ import static org.hibernate.annotations.OnDeleteAction.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class Post extends Timestamped {
 
@@ -36,7 +37,7 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    private String imageUrl;
+    private String image;
 
     private long liked;
 
@@ -47,11 +48,11 @@ public class Post extends Timestamped {
     @OnDelete(action = CASCADE)
     private User user;
 
-    public Post(PostRequestDto postRequestDto, User user) {
+    public Post(PostRequestDto postRequestDto, String image, User user) {
         this.title = postRequestDto.getTitle();
         this.username = user.getUsername();
         this.content = postRequestDto.getContent();
-        this.imageUrl = postRequestDto.getImageUrl();
+        this.image = image;
         this.liked = 0;
         this.disliked = 0;
         this.user = user;

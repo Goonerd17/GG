@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import teameight.gg.dto.PostRequestDto;
 import teameight.gg.dto.PostResponseDto;
 import teameight.gg.dto.PostSearchCondition;
@@ -12,20 +13,24 @@ import teameight.gg.entity.Post;
 import teameight.gg.entity.User;
 import teameight.gg.repository.PostRepository;
 
+import java.io.IOException;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final S3Service s3Service;
 
     public Slice<PostResponseDto> searchPost(PostSearchCondition condition, Pageable pageable) {
         return postRepository.serachPostBySlice(condition, pageable);
     }
 
     @Transactional
-    public String createPost(PostRequestDto postRequestDto, User user) {
-        Post post = postRepository.save(new Post(postRequestDto, user));
+    public String createPost(PostRequestDto postRequestDto,MultipartFile image, User user) {
+        String imageUrl = s3Service.upload(image, "GG");
+        postRepository.save(new Post(postRequestDto, imageUrl, user));
         return "작성 성공";
     }
 

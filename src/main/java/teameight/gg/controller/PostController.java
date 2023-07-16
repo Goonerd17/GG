@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import teameight.gg.dto.ApiResponse;
 import teameight.gg.dto.PostRequestDto;
 import teameight.gg.dto.PostSearchCondition;
@@ -19,6 +20,7 @@ public class PostController {
 
     private final PostService postService;
 
+
     @GetMapping
     public ApiResponse<?> searchPost(PostSearchCondition condition, Pageable pageable) {
         return ok(postService.searchPost(condition, pageable));
@@ -30,9 +32,10 @@ public class PostController {
     }
 
     @PostMapping("/newpost")
-    public ApiResponse<?> createPost(@RequestBody PostRequestDto postRequestDto,
+    public ApiResponse<?> createPost(@RequestPart(value = "data") PostRequestDto postRequestDto,
+                                     @RequestPart(value = "file", required = false) MultipartFile image,
                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return ok(postService.createPost(postRequestDto, userDetailsImpl.getUser()));
+        return ok(postService.createPost(postRequestDto, image, userDetailsImpl.getUser()));
     }
 
     @PutMapping("/{postId}")
