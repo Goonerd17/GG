@@ -36,6 +36,8 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    private String imageUrl;
+
     private long liked;
 
     private long disliked;
@@ -49,9 +51,10 @@ public class Post extends Timestamped {
         this.title = postRequestDto.getTitle();
         this.username = user.getUsername();
         this.content = postRequestDto.getContent();
-        this.user = user;
+        this.imageUrl = postRequestDto.getImageUrl();
         this.liked = 0;
         this.disliked = 0;
+        this.user = user;
     }
 
     public void update(PostRequestDto postRequestDto) {
@@ -59,9 +62,7 @@ public class Post extends Timestamped {
         this.content = postRequestDto.getContent();
     }
 
-    public void increaseLike() {
-        this.liked += 1;
-    }
+    public void increaseLike() { this.liked += 1; }
 
     public void decreaseLike() {
         this.liked -= 1;
