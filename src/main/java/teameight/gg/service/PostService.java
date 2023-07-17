@@ -49,8 +49,10 @@ public class PostService {
     @Transactional
     public String deletePost(Long postId, User user) {
         Post post = confirmPost(postId, user);
+        String imageUrl = post.getImage();
+        s3Service.deleteFile(imageUrl);
         postRepository.delete(post);
-        return "삭제 실패";
+        return "삭제 성공";
     }
 
     public Post findPost(Long postId) {

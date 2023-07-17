@@ -16,6 +16,7 @@ public class PostResponseDto {
     private String username;
     private String content;
     private LocalDateTime createdAt;
+    private String image;
     private long liked;
     private long disliked;
 
@@ -25,6 +26,7 @@ public class PostResponseDto {
         this.username = post.getUsername();
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
+        this.image = post.getImage();
         this.liked = post.getLiked();
         this.disliked = post.getDisliked();
     }
