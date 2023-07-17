@@ -3,7 +3,7 @@ package teameight.gg.domain.comment.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import teameight.gg.global.utils.ApiResponse;
+import teameight.gg.global.responseDto.ApiResponse;
 import teameight.gg.domain.comment.dto.CommentRequestDto;
 import teameight.gg.global.security.UserDetailsImpl;
 import teameight.gg.domain.comment.service.CommentService;

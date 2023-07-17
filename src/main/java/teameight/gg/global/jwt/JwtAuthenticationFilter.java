@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import teameight.gg.domain.user.dto.LoginRequestDto;
-import teameight.gg.global.utils.ApiResponse;
+import teameight.gg.global.responseDto.ApiResponse;
 import teameight.gg.domain.user.entity.UserRoleEnum;
 import teameight.gg.global.security.UserDetailsImpl;
 

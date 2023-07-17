@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import teameight.gg.domain.preference.service.PreferenceService;
+import teameight.gg.global.responseDto.ApiResponse;
 import teameight.gg.global.security.UserDetailsImpl;
-import teameight.gg.global.utils.ApiResponse;
+
 
 import static teameight.gg.global.utils.ResponseUtils.ok;
 

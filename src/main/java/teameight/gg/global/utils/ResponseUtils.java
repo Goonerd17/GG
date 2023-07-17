@@ -3,6 +3,8 @@ package teameight.gg.global.utils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teameight.gg.global.exception.ErrorCodeEnum;
+import teameight.gg.global.responseDto.ApiResponse;
+import teameight.gg.global.responseDto.ErrorResponse;
 
 @Getter
 @NoArgsConstructor

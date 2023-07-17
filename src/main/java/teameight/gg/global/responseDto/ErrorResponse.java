@@ -1,4 +1,4 @@
-package teameight.gg.global.utils;
+package teameight.gg.global.responseDto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

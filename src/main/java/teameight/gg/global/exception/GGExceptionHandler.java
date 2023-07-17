@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import teameight.gg.global.utils.ApiResponse;
+import teameight.gg.global.responseDto.ApiResponse;
 
 import java.util.List;
 

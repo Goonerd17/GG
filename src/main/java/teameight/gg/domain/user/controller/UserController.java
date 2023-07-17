@@ -3,9 +3,10 @@ package teameight.gg.domain.user.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import teameight.gg.global.utils.ApiResponse;
 import teameight.gg.domain.user.dto.SignupRequestDto;
 import teameight.gg.domain.user.service.UserService;
+import teameight.gg.global.responseDto.ApiResponse;
+
 
 import static teameight.gg.global.utils.ResponseUtils.*;
 

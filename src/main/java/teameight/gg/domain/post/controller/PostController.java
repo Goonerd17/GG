@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import teameight.gg.global.utils.ApiResponse;
+import teameight.gg.global.responseDto.ApiResponse;
 import teameight.gg.domain.post.dto.PostRequestDto;
 import teameight.gg.domain.post.dto.PostSearchCondition;
 import teameight.gg.global.security.UserDetailsImpl;
