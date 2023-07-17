@@ -1,10 +1,10 @@
 cloud:
   aws:
     credentials:
-      access-key: AKIAVQFBB6PZUP7IPQ3Z
-      secret-key: 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
+      access-key:
+      secret-key:
     s3:
-      bucket: 88hajobucket
+      bucket:
     region:
       static: ap-northeast-2 # 리전 정보(서울)
     stack:
