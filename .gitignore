@@ -39,11 +39,3 @@ out/
 
 ### .gitignore ###
 /src/main/generated/
-
-
-## .properties file ##
-/src/main/resources/application.properties
-
-
-## .yml file ##
-/src/main/resources/application.yml
