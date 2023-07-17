@@ -13,7 +13,7 @@ import teameight.gg.service.PreferenceService;
 import static teameight.gg.utils.ResponseUtils.ok;
 
 @RestController
-@RequestMapping("/api/post")
+@RequestMapping("/post")
 @RequiredArgsConstructor
 public class LikeController {
 

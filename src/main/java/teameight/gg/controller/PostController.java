@@ -14,7 +14,7 @@ import teameight.gg.service.PostService;
 import static teameight.gg.utils.ResponseUtils.ok;
 
 @RestController
-@RequestMapping("/api/post")
+@RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostController {
 

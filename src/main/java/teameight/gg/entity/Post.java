@@ -37,6 +37,9 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
     private String image;
 
     private long liked;
@@ -61,6 +64,11 @@ public class Post extends Timestamped {
     public void update(PostRequestDto postRequestDto) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+    }
+
+    public void addComment(Comment comment) {
+        commentList.add(comment);
+        comment.setPost(this);
     }
 
     public void increaseLike() { this.liked += 1; }

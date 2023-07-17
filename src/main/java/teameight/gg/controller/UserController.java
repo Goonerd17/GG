@@ -10,7 +10,7 @@ import teameight.gg.service.UserService;
 import static teameight.gg.utils.ResponseUtils.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class UserController {
 

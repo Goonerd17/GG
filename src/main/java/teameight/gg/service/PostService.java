@@ -31,11 +31,12 @@ public class PostService {
     public String createPost(PostRequestDto postRequestDto,MultipartFile image, User user) {
         String imageUrl = s3Service.upload(image, "GG");
         postRepository.save(new Post(postRequestDto, imageUrl, user));
-        return "작성 성공";
+        return "게시글 작성 성공";
     }
 
-    public PostResponseDto getSinglePost(Long postID) {
-        Post post = findPost(postID);
+    public PostResponseDto getSinglePost(Long postId) {
+        Post post = postRepository.findDetailPost(postId).orElseThrow(()->
+                new IllegalArgumentException("해당 게시글은 존재하지 않습니다"));
         return new PostResponseDto(post);
     }
 
@@ -43,16 +44,14 @@ public class PostService {
     public String updatePost(Long postId, PostRequestDto postRequestDto, User user) {
         Post post = confirmPost(postId, user);
         post.update(postRequestDto);
-        return "수정 성공";
+        return "게시글 수정 성공";
     }
 
     @Transactional
     public String deletePost(Long postId, User user) {
         Post post = confirmPost(postId, user);
-        String imageUrl = post.getImage();
-        s3Service.deleteFile(imageUrl);
         postRepository.delete(post);
-        return "삭제 성공";
+        return "게시글 삭제 성공";
     }
 
     public Post findPost(Long postId) {

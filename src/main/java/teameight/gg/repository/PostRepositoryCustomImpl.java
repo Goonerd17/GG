@@ -8,13 +8,17 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import teameight.gg.dto.PostResponseDto;
 import teameight.gg.dto.PostSearchCondition;
+import teameight.gg.dto.QPostResponseDto;
 import teameight.gg.entity.Post;
+import teameight.gg.entity.QComment;
+import teameight.gg.entity.QPost;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.util.StringUtils.*;
+import static teameight.gg.entity.QComment.*;
 import static teameight.gg.entity.QPost.*;
 
 @RequiredArgsConstructor
@@ -24,19 +28,27 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
 
     @Override
     public Slice<PostResponseDto> serachPostBySlice(PostSearchCondition condition, Pageable pageable) {
-        List<Post> result = query
-                .selectFrom(post)
-                .where(usernameEq(condition.getUsername()), titleEq(condition.getTitle()))
+        List<PostResponseDto> result = query
+                .select(new QPostResponseDto(
+                        post.id,
+                        post.title,
+                        post.username,
+                        post.content,
+                        post.createdAt,
+                        post.image,
+                        post.liked,
+                        post.disliked
+                ))
+                .from(post)
+                .where(
+                        usernameEq(condition.getUsername()),
+                        titleEq(condition.getTitle()))
                 .orderBy(post.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        List<PostResponseDto> content = new ArrayList<>();
-        for (Post post : result) {
-            content.add(new PostResponseDto(post));
-        }
-        return checkEndPage(pageable, content);
+        return checkEndPage(pageable, result);
     }
 
     private BooleanExpression usernameEq(String usernameCond) {

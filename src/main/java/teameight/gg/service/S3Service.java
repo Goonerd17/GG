@@ -43,9 +43,9 @@ public class S3Service {
         }
     }
 
-    public void deleteFile(String imageUrl) {
-        amazonS3Client.deleteObject(this.bucket, imageUrl);
-    }
+//    public void deleteFile(String imageUrl) {
+//        amazonS3Client.deleteObject(this.bucket, imageUrl);
+//    }
 
     private String upload(File uploadFile, String dirName) {
         String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();
