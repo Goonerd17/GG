@@ -17,6 +17,8 @@ import teameight.gg.global.security.UserDetailsImpl;
 
 import java.io.IOException;
 
+import static teameight.gg.global.stringCode.ErrorCodeEnum.*;
+import static teameight.gg.global.stringCode.SuccessCodeEnum.*;
 import static teameight.gg.global.utils.ResponseUtils.*;
 
 @Slf4j
@@ -57,7 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = jwtProvider.createToken(username, role);
         jwtProvider.addJwtHeader(token, response);
 
-        ApiResponse<?> apiResponse = ok("로그인 성공");
+        ApiResponse<?> apiResponse = successWithData(USER_LOGIN_SUCCESS);
 
         String jsonResponse = objectMapper.writeValueAsString(apiResponse);
         response.setContentType("application/json");
@@ -71,7 +73,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("로그인 실패");
         ObjectMapper objectMapper = new ObjectMapper();
 
-        ApiResponse<?> apiResponse = error("로그인 실패", 401);
+        ApiResponse<?> apiResponse = customError(LOGIN_FAIL);
 
         String jsonResponse = objectMapper.writeValueAsString(apiResponse);
         response.setContentType("application/json");

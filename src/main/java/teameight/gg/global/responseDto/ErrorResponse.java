@@ -3,8 +3,7 @@ package teameight.gg.global.responseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
-import teameight.gg.global.exception.ErrorCodeEnum;
-
+import teameight.gg.global.stringCode.ErrorCodeEnum;
 
 @Getter
 @NoArgsConstructor

@@ -9,6 +9,12 @@ import teameight.gg.domain.comment.repository.CommentRepository;
 import teameight.gg.domain.post.entity.Post;
 import teameight.gg.domain.user.entity.User;
 import teameight.gg.domain.post.repository.PostRepository;
+import teameight.gg.global.exception.InvalidConditionException;
+import teameight.gg.global.responseDto.ApiResponse;
+
+import static teameight.gg.global.stringCode.ErrorCodeEnum.*;
+import static teameight.gg.global.stringCode.SuccessCodeEnum.*;
+import static teameight.gg.global.utils.ResponseUtils.*;
 
 @Service
 @Transactional
@@ -18,43 +24,43 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-    public String createComment(Long postId, CommentRequestDto commentRequestDto, User user) {
+    public ApiResponse<?> createComment(Long postId, CommentRequestDto commentRequestDto, User user) {
         Comment comment = new Comment(commentRequestDto, user);
         findPost(postId).addComment(comment);
         commentRepository.save(comment);
-        return "댓글 작성 완료";
+        return success(COMMENT_CREATE_SUCCESS);
     }
 
-    public String updateComment(Long commentId, CommentRequestDto commentRequestDto, User user) {
+    public ApiResponse<?> updateComment(Long commentId, CommentRequestDto commentRequestDto, User user) {
         Comment comment = findComment(commentId);
         checkUsername(commentId, user);
         comment.update(commentRequestDto);
-        return "댓글 수정 완료";
+        return success(COMMENT_UPDATE_SUCCESS);
     }
 
-    public String deleteComment(Long commentId, User user) {
+    public ApiResponse<?> deleteComment(Long commentId, User user) {
         Comment comment = findComment(commentId);
         checkUsername(commentId, user);
         commentRepository.delete(comment);
-        return "댓글 삭제 성공";
+        return success(COMMENT_DELETE_SUCCESS);
     }
 
     @Transactional
     public Comment findComment(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(() ->
-                new IllegalArgumentException("해당 댓글은 존재하지 않습니다"));
+                new InvalidConditionException(COMMENT_NOT_EXIST));
     }
 
     @Transactional
     public Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(() ->
-                new IllegalArgumentException("해당 게시글은 존재하지 않습니다"));
+                new InvalidConditionException(POST_NOT_EXIST));
     }
 
     private void checkUsername(Long commentId, User user) {
         Comment comment = findComment(commentId);
         if (!(comment.getUser().getId() == user.getId())) {
-            throw new IllegalArgumentException("작성자만 삭제/수정할 수 있습니다.");
+            throw new InvalidConditionException(USER_NOT_MATCH);
         }
 
     }

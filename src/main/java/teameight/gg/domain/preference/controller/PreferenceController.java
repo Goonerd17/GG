@@ -10,10 +10,6 @@ import teameight.gg.domain.preference.service.PreferenceService;
 import teameight.gg.global.responseDto.ApiResponse;
 import teameight.gg.global.security.UserDetailsImpl;
 
-
-import static teameight.gg.global.utils.ResponseUtils.ok;
-
-
 @RestController
 @RequestMapping("/post")
 @RequiredArgsConstructor
@@ -24,12 +20,12 @@ public class PreferenceController {
     @PostMapping("/{postId}/like")
     public ApiResponse<?> updateLike(@PathVariable Long postId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return ok(preferenceService.updateLike(postId, userDetailsImpl.getUser()));
+        return preferenceService.updateLike(postId, userDetailsImpl.getUser());
     }
 
     @PostMapping("/{postId}/dislike")
     public ApiResponse<?> updateDislike(@PathVariable Long postId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return ok(preferenceService.updateDislike(postId, userDetailsImpl.getUser()));
+        return preferenceService.updateDislike(postId, userDetailsImpl.getUser());
     }
 }

@@ -1,4 +1,4 @@
-package teameight.gg.global.exception;
+package teameight.gg.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -9,10 +9,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
+import teameight.gg.global.stringCode.ErrorCodeEnum;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import static teameight.gg.global.stringCode.ErrorCodeEnum.TOKEN_EXPIRED;
+import static teameight.gg.global.stringCode.ErrorCodeEnum.TOKEN_INVALID;
 import static teameight.gg.global.utils.ResponseUtils.*;
 
 public class JwtExceptionFilter extends OncePerRequestFilter {
@@ -22,9 +25,9 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-            setErrorResponse(response, ErrorCodeEnum.TOKEN_EXPIRED);
+            setErrorResponse(response, TOKEN_EXPIRED);
         } catch (JwtException | IllegalArgumentException | NullPointerException | UnsupportedEncodingException e) {
-            setErrorResponse(response, ErrorCodeEnum.TOKEN_INVALID);
+            setErrorResponse(response, TOKEN_INVALID);
         }
     }
 
@@ -35,7 +38,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         response.setCharacterEncoding("UTF-8");
 
         try {
-            response.getWriter().write(objectMapper.writeValueAsString(tokenError(errorCodeEnum)));
+            response.getWriter().write(objectMapper.writeValueAsString(customError(errorCodeEnum)));
         } catch (IOException e) {
             e.printStackTrace();
         }

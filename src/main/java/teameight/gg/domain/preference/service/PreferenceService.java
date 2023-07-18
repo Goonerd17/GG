@@ -10,6 +10,12 @@ import teameight.gg.domain.user.entity.User;
 import teameight.gg.domain.preference.repository.DislikeRepository;
 import teameight.gg.domain.preference.repository.LikeRepository;
 import teameight.gg.domain.post.repository.PostRepository;
+import teameight.gg.global.exception.InvalidConditionException;
+import teameight.gg.global.responseDto.ApiResponse;
+
+import static teameight.gg.global.stringCode.ErrorCodeEnum.POST_NOT_EXIST;
+import static teameight.gg.global.stringCode.SuccessCodeEnum.*;
+import static teameight.gg.global.utils.ResponseUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -20,60 +26,60 @@ public class PreferenceService {
     private final DislikeRepository dislikeRepository;
     private final PostRepository postRepository;
 
-    public String updateLike(Long postId, User user) {
+    public ApiResponse<?> updateLike(Long postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(()->
-                new IllegalArgumentException("해당 게시글은 존재하지 않습니다"));
+                new InvalidConditionException(POST_NOT_EXIST));;
 
         if (!isLikedPost(post, user)) {
             createLike(post, user);
             post.increaseLike();
-            return "좋아요 성공";
+            return success(LIKE_SUCCESS);
         }
 
         removeLike(post, user);
         post.decreaseLike();
-        return "좋아요 취소";
+        return success(LIKE_CANCEL);
     }
 
-    public String updateDislike(Long postId, User user) {
+    public ApiResponse<?> updateDislike(Long postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(()->
-                new IllegalArgumentException("해당 게시글은 존재하지 않습니다"));
+                new InvalidConditionException(POST_NOT_EXIST));;
 
         if (!isDislikedPost(post, user)) {
             createDislike(post, user);
             post.increaseDislike();
-            return "싫어요 성공";
+            return success(DISLIKE_SUCCESS);
         }
 
         removeDislike(post, user);
         post.decreaseDislike();
-        return "싫어요 취소";
+        return success(DISLIKE_CANCEL);
     }
 
-    public boolean isLikedPost(Post post, User user) {
+    private boolean isLikedPost(Post post, User user) {
         return likeRepository.findByPostAndUser(post, user).isPresent();
     }
 
-    public void createLike(Post post, User user) {
+    private boolean isDislikedPost(Post post, User user) {
+        return dislikeRepository.findByPostAndUser(post, user).isPresent();
+    }
+
+    private void createLike(Post post, User user) {
         Like like = new Like(post, user);
         likeRepository.save(like);
     }
 
-    public void removeLike(Post post, User user) {
-        Like like = likeRepository.findByPostAndUser(post, user).orElseThrow();
-        likeRepository.delete(like);
-    }
-
-    public boolean isDislikedPost(Post post, User user) {
-        return dislikeRepository.findByPostAndUser(post, user).isPresent();
-    }
-
-    public void createDislike(Post post, User user) {
+    private void createDislike(Post post, User user) {
         Dislike dislike = new Dislike(post, user);
         dislikeRepository.save(dislike);
     }
 
-    public void removeDislike(Post post, User user) {
+    private void removeLike(Post post, User user) {
+        Like like = likeRepository.findByPostAndUser(post, user).orElseThrow();
+        likeRepository.delete(like);
+    }
+
+    private void removeDislike(Post post, User user) {
         Dislike dislike = dislikeRepository.findByPostAndUser(post, user).orElseThrow();
         dislikeRepository.delete(dislike);
     }

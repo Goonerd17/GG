@@ -13,14 +13,28 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static teameight.gg.global.utils.ResponseUtils.error;
+import static teameight.gg.global.utils.ResponseUtils.customError;
 
 @ControllerAdvice
 @ResponseBody
 public class GGExceptionHandler {
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(BAD_REQUEST)
     public ApiResponse<?> handleIllegalArgsException(IllegalArgumentException ie) {
         return error(ie.getMessage(), BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(InvalidConditionException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiResponse<?> handleUserException(InvalidConditionException e) {
+        return customError(e.errorCodeEnum);
+    }
+
+    @ExceptionHandler(UploadException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiResponse<?> handleUploadsException(UploadException e) {
+        return customError(e.errorCodeEnum);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

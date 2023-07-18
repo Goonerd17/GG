@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import teameight.gg.global.exception.JwtExceptionFilter;
+import teameight.gg.global.jwt.JwtExceptionFilter;
 import teameight.gg.global.jwt.JwtAuthenticationFilter;
 import teameight.gg.global.jwt.JwtAuthorizationFilter;
 import teameight.gg.global.jwt.JwtProvider;
@@ -58,42 +58,37 @@ public class WebSecurityConfig {
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration config = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT","OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        config.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT","OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.addExposedHeader("*");
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // CSRF 설정
-        http.csrf((csrf) -> csrf.disable())
-                .cors(withDefaults());
 
-
-        // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
-        http.sessionManagement((sessionManagement) ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        );
-
-        http.authorizeHttpRequests((authorizeHttpRequests) ->
-                authorizeHttpRequests
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
-                        .anyRequest().authenticated() // 그 외 모든 요청 인증처리
-        );
-
-        // 필터 관리
-        http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(jwtExceptionFilter(), JwtAuthenticationFilter.class);
+        // CSRF 설정, CORS 설정, 기존 세션 방식 -> JWT 방식
+        http
+                .csrf((csrf) -> csrf.disable())
+                .cors(withDefaults())
+                .sessionManagement((sessionManagement) ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests((authorizeHttpRequests) ->
+                        authorizeHttpRequests
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
+                                .anyRequest().authenticated()) // 그 외 모든 요청 인증처리
+                .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter(), JwtAuthenticationFilter.class);
 
         return http.build();
     }

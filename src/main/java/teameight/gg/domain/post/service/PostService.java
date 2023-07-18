@@ -12,6 +12,13 @@ import teameight.gg.domain.post.dto.PostSearchCondition;
 import teameight.gg.domain.post.entity.Post;
 import teameight.gg.domain.user.entity.User;
 import teameight.gg.domain.post.repository.PostRepository;
+import teameight.gg.global.exception.InvalidConditionException;
+import teameight.gg.global.responseDto.ApiResponse;
+
+import static teameight.gg.global.stringCode.ErrorCodeEnum.POST_NOT_EXIST;
+import static teameight.gg.global.stringCode.ErrorCodeEnum.USER_NOT_MATCH;
+import static teameight.gg.global.stringCode.SuccessCodeEnum.*;
+import static teameight.gg.global.utils.ResponseUtils.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,46 +28,47 @@ public class PostService {
     private final PostRepository postRepository;
     private final S3Service s3Service;
 
-    public Slice<PostResponseDto> searchPost(PostSearchCondition condition, Pageable pageable) {
-        return postRepository.serachPostBySlice(condition, pageable);
+    public ApiResponse<?> searchPost(PostSearchCondition condition, Pageable pageable) {
+        Slice<PostResponseDto> postSlice = postRepository.serachPostBySlice(condition, pageable);
+        return successWithData(postSlice);
     }
 
     @Transactional
-    public String createPost(PostRequestDto postRequestDto,MultipartFile image, User user) {
+    public ApiResponse<?> createPost(PostRequestDto postRequestDto, MultipartFile image, User user) {
         String imageUrl = s3Service.upload(image, "GG");
         postRepository.save(new Post(postRequestDto, imageUrl, user));
-        return "게시글 작성 성공";
+        return success(POST_CREATE_SUCCESS);
     }
 
-    public PostResponseDto getSinglePost(Long postId) {
+    public ApiResponse<?> getSinglePost(Long postId) {
         Post post = postRepository.findDetailPost(postId).orElseThrow(()->
-                new IllegalArgumentException("해당 게시글은 존재하지 않습니다"));
-        return new PostResponseDto(post);
+                new InvalidConditionException(POST_NOT_EXIST));
+        return successWithData(new PostResponseDto(post));
     }
 
     @Transactional
-    public String updatePost(Long postId, PostRequestDto postRequestDto, User user) {
+    public ApiResponse<?> updatePost(Long postId, PostRequestDto postRequestDto, User user) {
         Post post = confirmPost(postId, user);
         post.update(postRequestDto);
-        return "게시글 수정 성공";
+        return success(POST_UPDATE_SUCCESS);
     }
 
     @Transactional
-    public String deletePost(Long postId, User user) {
+    public ApiResponse<?> deletePost(Long postId, User user) {
         Post post = confirmPost(postId, user);
         postRepository.delete(post);
-        return "게시글 삭제 성공";
+        return success(POST_DELETE_SUCCESS);
     }
 
-    public Post findPost(Long postId) {
+    private Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(()->
-                new IllegalArgumentException("해당 게시글은 존재하지 않습니다"));
+                new InvalidConditionException(POST_NOT_EXIST));
     }
 
-    public Post confirmPost(Long postId, User user) {
+    private Post confirmPost(Long postId, User user) {
         Post post = findPost(postId);
         if (!(user.getId() == post.getUser().getId()))
-            throw new IllegalArgumentException("해당 게시글 작성자만 수정,삭제할 수 있습니다");
+            throw new InvalidConditionException(USER_NOT_MATCH);
         return post;
     }
 }

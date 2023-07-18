@@ -10,7 +10,6 @@ import teameight.gg.domain.post.dto.PostResponseDto;
 import teameight.gg.domain.post.dto.PostSearchCondition;
 import teameight.gg.domain.post.dto.QPostResponseDto;
 
-
 import java.util.List;
 
 import static org.springframework.util.StringUtils.*;

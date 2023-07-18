@@ -1,8 +1,6 @@
 package teameight.gg.domain.post.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -10,7 +8,6 @@ import teameight.gg.domain.comment.entity.Comment;
 import teameight.gg.domain.post.dto.PostRequestDto;
 import teameight.gg.domain.user.entity.User;
 import teameight.gg.global.utils.Timestamped;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +18,6 @@ import static org.hibernate.annotations.OnDeleteAction.*;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class Post extends Timestamped {
 
@@ -37,17 +32,17 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    private String image;
-
     private long liked;
 
     private long disliked;
+
+    private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

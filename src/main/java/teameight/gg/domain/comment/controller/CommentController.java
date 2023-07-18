@@ -8,8 +8,6 @@ import teameight.gg.domain.comment.dto.CommentRequestDto;
 import teameight.gg.global.security.UserDetailsImpl;
 import teameight.gg.domain.comment.service.CommentService;
 
-import static teameight.gg.global.utils.ResponseUtils.ok;
-
 @RestController
 @RequestMapping("/post/{postId}/comment")
 @RequiredArgsConstructor
@@ -21,19 +19,19 @@ public class CommentController {
     public ApiResponse<?> createComment(@PathVariable Long postId,
                                         @RequestBody CommentRequestDto commentRequestDto,
                                         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return ok(commentService.createComment(postId, commentRequestDto, userDetailsImpl.getUser()));
+        return commentService.createComment(postId, commentRequestDto, userDetailsImpl.getUser());
     }
 
     @PutMapping("/{commentId}")
     public ApiResponse<?> updateComment(@PathVariable Long commentId,
                                         @RequestBody CommentRequestDto commentRequestDto,
                                         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return ok(commentService.updateComment(commentId, commentRequestDto, userDetailsImpl.getUser()));
+        return commentService.updateComment(commentId, commentRequestDto, userDetailsImpl.getUser());
     }
 
     @DeleteMapping("/{commentId}")
     public ApiResponse<?> removeComment(@PathVariable Long commentId,
                                         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return ok(commentService.deleteComment(commentId, userDetailsImpl.getUser()));
+        return commentService.deleteComment(commentId, userDetailsImpl.getUser());
     }
 }
