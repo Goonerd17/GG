@@ -34,7 +34,7 @@ public class S3Service {
      *
      * @param multipartFile 업로드할 이미지 파일
      * @return 업로드된 이미지의 S3 URL
-     * @throws IllegalArgumentException 업로드 실패 시 발생하는 예외
+     * @throws UploadException 업로드 실패 시 발생하는 예외
      */
     public String upload(MultipartFile multipartFile) {
         if (multipartFile == null || multipartFile.isEmpty()) return null;
@@ -68,7 +68,7 @@ public class S3Service {
      * S3에서 이미지 삭제
      *
      * @param imageUrl 삭제할 이미지의 URL
-     * @throws IllegalArgumentException 이미지 삭제 실패 시 발생하는 예외
+     * @throws UploadException 이미지 삭제 실패 시 발생하는 예외
      */
     public void delete(String imageUrl) {
         if (StringUtils.hasText(imageUrl)) {
@@ -90,7 +90,7 @@ public class S3Service {
      *
      * @param imageUrl 이미지의 URL
      * @return 추출된 S3 객체 키
-     * @throws IllegalArgumentException 잘못된 URL 형식일 경우 발생하는 예외
+     * @throws UploadException 잘못된 URL 형식일 경우 발생하는 예외
      */
     private String extractObjectKeyFromUrl(String imageUrl) {
         try {
@@ -105,7 +105,7 @@ public class S3Service {
      *
      * @param originalFilename 업로드할 이미지 파일의 원본 파일 이름
      * @return 생성된 고유한 파일 이름
-     * @throws IllegalArgumentException 파일 이름이 유효하지 않을 경우 발생하는 예외
+     * @throws UploadException 파일 이름이 유효하지 않을 경우 발생하는 예외
      */
     private String generateFileName(String originalFilename) {
         if (StringUtils.hasText(originalFilename)) {
@@ -120,7 +120,7 @@ public class S3Service {
      *
      * @param originalFilename 파일 이름
      * @return 추출된 확장자
-     * @throws IllegalArgumentException 확장자를 추출할 수 없을 경우 발생하는 예외
+     * @throws UploadException 확장자를 추출할 수 없을 경우 발생하는 예외
      */
     private String extractExtension(String originalFilename) {
         if (StringUtils.hasText(originalFilename)) {

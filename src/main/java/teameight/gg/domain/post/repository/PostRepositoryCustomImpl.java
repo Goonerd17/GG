@@ -35,9 +35,9 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
                 ))
                 .from(post)
                 .where(
-                        usernameEq(condition.getUsername()),
-                        titleEq(condition.getTitle()))
-                .orderBy(post.createdAt.desc())
+                        usernameLike(condition.getUsername()),
+                        titleLike(condition.getTitle()))
+                .orderBy(post.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
@@ -45,12 +45,12 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
         return checkEndPage(pageable, result);
     }
 
-    private BooleanExpression usernameEq(String usernameCond) {
-        return hasText(usernameCond) ? post.username.eq(usernameCond) : null;
+    private BooleanExpression usernameLike(String usernameCond) {
+        return hasText(usernameCond) ? post.username.like("%" + usernameCond + "%") : null;
     }
 
-    private BooleanExpression titleEq(String titleCond) {
-        return hasText(titleCond) ? post.title.eq(titleCond) : null;
+    private BooleanExpression titleLike(String titleCond) {
+        return hasText(titleCond) ? post.title.like("%" + titleCond + "%") : null;
     }
 
     private static SliceImpl<PostResponseDto> checkEndPage(Pageable pageable, List<PostResponseDto> content) {

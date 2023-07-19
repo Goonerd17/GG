@@ -50,10 +50,6 @@ public class Post extends Timestamped {
     @OnDelete(action = CASCADE)
     private User user;
 
-    public void setImage (String image) {
-        this.image = image;
-    }
-
     public Post(PostRequestDto postRequestDto, String image, User user) {
         this.title = postRequestDto.getTitle();
         this.username = user.getUsername();
@@ -69,9 +65,15 @@ public class Post extends Timestamped {
         this.content = postRequestDto.getContent();
     }
 
+    public void updateAll(PostRequestDto postRequestDto, String image) {
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
+        this.image = image;
+    }
+
     public void addComment(Comment comment) {
         commentList.add(comment);
-        comment.setPost(this);
+        comment.initPost(this);
     }
 
     public void increaseLike() { this.liked += 1; }

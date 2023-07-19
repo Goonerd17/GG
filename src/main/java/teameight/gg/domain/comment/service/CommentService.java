@@ -62,6 +62,5 @@ public class CommentService {
         if (!(comment.getUser().getId() == user.getId())) {
             throw new InvalidConditionException(USER_NOT_MATCH);
         }
-
     }
 }

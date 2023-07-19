@@ -48,24 +48,8 @@ public class PostService {
     @Transactional
     public ApiResponse<?> updatePost(Long postId, PostRequestDto postRequestDto, MultipartFile image, User user) {
         Post post = confirmPost(postId, user);
-        post.update(postRequestDto);
-        updatePostImage(image, post);
+        updatePostDetail(postRequestDto, image, post);
         return okWithMessage(POST_UPDATE_SUCCESS);
-    }
-
-    private void updatePostImage(MultipartFile image, Post post) {
-        // 이미지 업로드
-        if (image != null && !image.isEmpty()) {
-            String existingImageUrl = post.getImage();
-            String imageUrl = s3Service.upload(image);
-            post.setImage(imageUrl); 
-            // 리팩토링 해야됨
-
-            // 새로운 이미지 업로드 후에 기존 이미지 삭제
-            if (StringUtils.hasText(existingImageUrl)) {
-                s3Service.delete(existingImageUrl);
-            }
-        }
     }
 
     @Transactional
@@ -76,6 +60,19 @@ public class PostService {
         return okWithMessage(POST_DELETE_SUCCESS);
     }
 
+    private void updatePostDetail(PostRequestDto postRequestDto, MultipartFile image, Post post) {
+        if (image != null && !image.isEmpty()) {
+            String existingImageUrl = post.getImage();
+            String imageUrl = s3Service.upload(image);
+            post.updateAll(postRequestDto, imageUrl);
+
+            // 새로운 이미지 업로드 후에 기존 이미지 삭제
+            if (StringUtils.hasText(existingImageUrl)) {
+                s3Service.delete(existingImageUrl);
+            }
+        }
+        post.update(postRequestDto);
+    }
 
     private void deleteImage(Post post) {
         String imageUrl = post.getImage();
@@ -97,4 +94,3 @@ public class PostService {
         return post;
     }
 }
-
