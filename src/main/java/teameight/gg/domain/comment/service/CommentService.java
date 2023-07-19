@@ -45,13 +45,13 @@ public class CommentService {
         return okWithMessage(COMMENT_DELETE_SUCCESS);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Comment findComment(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(() ->
                 new InvalidConditionException(COMMENT_NOT_EXIST));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(() ->
                 new InvalidConditionException(POST_NOT_EXIST));

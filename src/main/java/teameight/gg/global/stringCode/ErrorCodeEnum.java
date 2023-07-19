@@ -16,6 +16,9 @@ public enum ErrorCodeEnum {
     POST_NOT_EXIST(BAD_REQUEST, "존재하지 않는 게시글입니다"),
     COMMENT_NOT_EXIST(BAD_REQUEST, "존재하지 않는 댓글입니다"),
     FILE_INVALID(BAD_REQUEST, "유효한 파일이 아닙니다"),
+    FILE_DECODE_FAIL(BAD_REQUEST, "파일 이름 디코딩에 실패했습니다"),
+    URL_INVALID(BAD_REQUEST, "잘못된 URL 형식입니다."),
+    EXTRACT_INVALID(BAD_REQUEST, "확장자를 추출할 수 없습니다."),
     UPLOAD_FAIL(BAD_REQUEST, "유효하지 않은 요청입니다");
 
     private final HttpStatus status;

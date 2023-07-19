@@ -12,6 +12,7 @@ import teameight.gg.global.utils.Timestamped;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.PROTECTED;
 import static org.hibernate.annotations.OnDeleteAction.*;
@@ -35,14 +36,13 @@ public class Post extends Timestamped {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
     private long liked;
 
     private long disliked;
 
-    @Column(length = 9999)
     private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)

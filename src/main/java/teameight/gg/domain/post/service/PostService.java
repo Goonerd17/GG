@@ -2,7 +2,6 @@ package teameight.gg.domain.post.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -15,7 +14,6 @@ import teameight.gg.domain.user.entity.User;
 import teameight.gg.domain.post.repository.PostRepository;
 import teameight.gg.global.exception.InvalidConditionException;
 import teameight.gg.global.responseDto.ApiResponse;
-import teameight.gg.global.utils.ResponseUtils;
 
 import static teameight.gg.global.stringCode.ErrorCodeEnum.POST_NOT_EXIST;
 import static teameight.gg.global.stringCode.ErrorCodeEnum.USER_NOT_MATCH;
@@ -51,35 +49,39 @@ public class PostService {
     public ApiResponse<?> updatePost(Long postId, PostRequestDto postRequestDto, MultipartFile image, User user) {
         Post post = confirmPost(postId, user);
         post.update(postRequestDto);
+        updatePostImage(image, post);
+        return okWithMessage(POST_UPDATE_SUCCESS);
+    }
 
+    private void updatePostImage(MultipartFile image, Post post) {
         // 이미지 업로드
         if (image != null && !image.isEmpty()) {
             String existingImageUrl = post.getImage();
             String imageUrl = s3Service.upload(image);
-            post.setImage(imageUrl);
+            post.setImage(imageUrl); 
+            // 리팩토링 해야됨
 
-        // 새로운 이미지 업로드 후에 기존 이미지 삭제
+            // 새로운 이미지 업로드 후에 기존 이미지 삭제
             if (StringUtils.hasText(existingImageUrl)) {
                 s3Service.delete(existingImageUrl);
             }
         }
-        postRepository.save(post);
-
-        return okWithMessage(POST_UPDATE_SUCCESS);
     }
 
     @Transactional
     public ApiResponse<?> deletePost(Long postId, User user) {
         Post post = confirmPost(postId, user);
+        deleteImage(post);
+        postRepository.delete(post);
+        return okWithMessage(POST_DELETE_SUCCESS);
+    }
 
-        // 이미지 삭제
+
+    private void deleteImage(Post post) {
         String imageUrl = post.getImage();
         if (StringUtils.hasText(imageUrl)) {
             s3Service.delete(imageUrl);
         }
-
-        postRepository.delete(post);
-        return okWithMessage(POST_DELETE_SUCCESS);
     }
 
     private Post findPost(Long postId) {

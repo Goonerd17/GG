@@ -23,6 +23,7 @@ import teameight.gg.global.security.UserDetailsServiceImpl;
 
 import java.util.Arrays;
 
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.Customizer.*;
 
 @Configuration
@@ -84,7 +85,7 @@ public class WebSecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .requestMatchers("/auth/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
+                                .requestMatchers(GET, "/post/**").permitAll()
                                 .anyRequest().authenticated()) // 그 외 모든 요청 인증처리
                 .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

@@ -1,5 +1,6 @@
 package teameight.gg.global.exception;
 
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,6 +24,12 @@ public class GGExceptionHandler {
     @ResponseStatus(BAD_REQUEST)
     public ApiResponse<?> handleIllegalArgsException(IllegalArgumentException ie) {
         return error(ie.getMessage(), BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(AmazonS3Exception.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiResponse<?> handleAmazonS3Exception(AmazonS3Exception ae) {
+        return error(ae.getMessage(), BAD_REQUEST.value());
     }
 
     @ExceptionHandler(InvalidConditionException.class)

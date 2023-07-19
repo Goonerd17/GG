@@ -37,9 +37,8 @@ public class S3Service {
      * @throws IllegalArgumentException 업로드 실패 시 발생하는 예외
      */
     public String upload(MultipartFile multipartFile) {
-        if (multipartFile == null || multipartFile.isEmpty()) {
-            return "";
-        }
+        if (multipartFile == null || multipartFile.isEmpty()) return null;
+
         try {
             byte[] fileBytes = multipartFile.getBytes();
             String fileName = generateFileName(multipartFile.getOriginalFilename());
@@ -47,7 +46,7 @@ public class S3Service {
             putS3(fileBytes, fileName, contentType);
             return generateUnsignedUrl(fileName);
         } catch (IOException e) {
-            throw new UploadException(UPLOAD_FAIL);
+            throw new UploadException(UPLOAD_FAIL, e);
         }
     }
     /**
@@ -77,12 +76,12 @@ public class S3Service {
             try {
                 String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
                 if (!amazonS3.doesObjectExist(bucket, decodedFileName)) {
-                    throw new AmazonS3Exception("Object " + decodedFileName + " does not exist!");
+                    throw new AmazonS3Exception(decodedFileName + " 은 존재하지 않습니다");
                 }
                 amazonS3.deleteObject(bucket, decodedFileName);
                 log.info("파일 삭제: " + decodedFileName);
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("파일 이름 디코딩에 실패했습니다", e);
+                throw new UploadException(FILE_DECODE_FAIL, e);
             }
         }
     }
@@ -98,7 +97,7 @@ public class S3Service {
             URL url = new URL(imageUrl);
             return url.getPath().substring(1); // Remove the leading slash
         } catch (Exception e) {
-            throw new IllegalArgumentException("잘못된 URL 형식입니다.", e);
+            throw new UploadException(URL_INVALID, e);
         }
     }
     /**
@@ -114,7 +113,7 @@ public class S3Service {
             String uniqueId = UUID.randomUUID().toString();
             return uniqueId + "." + extension;
         }
-        throw new IllegalArgumentException("파일 이름이 유효하지 않습니다.");
+        throw new UploadException(FILE_INVALID);
     }
     /**
      * 파일 이름에서 확장자를 추출합니다.
@@ -130,7 +129,7 @@ public class S3Service {
                 return originalFilename.substring(extensionIndex + 1);
             }
         }
-        throw new IllegalArgumentException("확장자를 추출할 수 없습니다.");
+        throw new UploadException(EXTRACT_INVALID);
     }
     /**
      * S3 객체에 대한 유효기간이 없는 서명되지 않은 URL을 생성합니다.
