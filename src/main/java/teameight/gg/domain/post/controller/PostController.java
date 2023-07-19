@@ -38,9 +38,10 @@ public class PostController {
 
     @PutMapping("/{postId}")
     public ApiResponse<?> modifyPost(@PathVariable Long postId,
-                                     @RequestBody PostRequestDto postRequestDto,
+                                     @RequestPart(value = "data") PostRequestDto postRequestDto,
+                                     @RequestPart(value = "file", required = false) MultipartFile image,
                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return postService.updatePost(postId, postRequestDto, userDetailsImpl.getUser());
+        return postService.updatePost(postId, postRequestDto, image, userDetailsImpl.getUser());
     }
 
     @DeleteMapping ("/{postId}")

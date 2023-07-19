@@ -42,12 +42,17 @@ public class Post extends Timestamped {
 
     private long disliked;
 
+    @Column(length = 9999)
     private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @OnDelete(action = CASCADE)
     private User user;
+
+    public void setImage (String image) {
+        this.image = image;
+    }
 
     public Post(PostRequestDto postRequestDto, String image, User user) {
         this.title = postRequestDto.getTitle();

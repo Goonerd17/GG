@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import teameight.gg.domain.post.dto.PostRequestDto;
 import teameight.gg.domain.post.dto.PostResponseDto;
@@ -14,6 +15,7 @@ import teameight.gg.domain.user.entity.User;
 import teameight.gg.domain.post.repository.PostRepository;
 import teameight.gg.global.exception.InvalidConditionException;
 import teameight.gg.global.responseDto.ApiResponse;
+import teameight.gg.global.utils.ResponseUtils;
 
 import static teameight.gg.global.stringCode.ErrorCodeEnum.POST_NOT_EXIST;
 import static teameight.gg.global.stringCode.ErrorCodeEnum.USER_NOT_MATCH;
@@ -29,46 +31,67 @@ public class PostService {
     private final S3Service s3Service;
 
     public ApiResponse<?> searchPost(PostSearchCondition condition, Pageable pageable) {
-        Slice<PostResponseDto> postSlice = postRepository.serachPostBySlice(condition, pageable);
-        return successWithData(postSlice);
+        return ok(postRepository.serachPostBySlice(condition, pageable));
     }
 
     @Transactional
     public ApiResponse<?> createPost(PostRequestDto postRequestDto, MultipartFile image, User user) {
-        String imageUrl = s3Service.upload(image, "GG");
+        String imageUrl = s3Service.upload(image);
         postRepository.save(new Post(postRequestDto, imageUrl, user));
-        return success(POST_CREATE_SUCCESS);
+        return okWithMessage(POST_CREATE_SUCCESS);
     }
 
     public ApiResponse<?> getSinglePost(Long postId) {
-        Post post = postRepository.findDetailPost(postId).orElseThrow(()->
+        Post post = postRepository.findDetailPost(postId).orElseThrow(() ->
                 new InvalidConditionException(POST_NOT_EXIST));
-        return successWithData(new PostResponseDto(post));
+        return ok(new PostResponseDto(post));
     }
 
     @Transactional
-    public ApiResponse<?> updatePost(Long postId, PostRequestDto postRequestDto, User user) {
+    public ApiResponse<?> updatePost(Long postId, PostRequestDto postRequestDto, MultipartFile image, User user) {
         Post post = confirmPost(postId, user);
         post.update(postRequestDto);
-        return success(POST_UPDATE_SUCCESS);
+
+        // 이미지 업로드
+        if (image != null && !image.isEmpty()) {
+            String existingImageUrl = post.getImage();
+            String imageUrl = s3Service.upload(image);
+            post.setImage(imageUrl);
+
+        // 새로운 이미지 업로드 후에 기존 이미지 삭제
+            if (StringUtils.hasText(existingImageUrl)) {
+                s3Service.delete(existingImageUrl);
+            }
+        }
+        postRepository.save(post);
+
+        return okWithMessage(POST_UPDATE_SUCCESS);
     }
 
     @Transactional
     public ApiResponse<?> deletePost(Long postId, User user) {
         Post post = confirmPost(postId, user);
+
+        // 이미지 삭제
+        String imageUrl = post.getImage();
+        if (StringUtils.hasText(imageUrl)) {
+            s3Service.delete(imageUrl);
+        }
+
         postRepository.delete(post);
-        return success(POST_DELETE_SUCCESS);
+        return okWithMessage(POST_DELETE_SUCCESS);
     }
 
     private Post findPost(Long postId) {
-        return postRepository.findById(postId).orElseThrow(()->
+        return postRepository.findById(postId).orElseThrow(() ->
                 new InvalidConditionException(POST_NOT_EXIST));
     }
 
     private Post confirmPost(Long postId, User user) {
         Post post = findPost(postId);
-        if (!(user.getId() == post.getUser().getId()))
+        if (!user.getId().equals(post.getUser().getId())) {
             throw new InvalidConditionException(USER_NOT_MATCH);
+        }
         return post;
     }
 }

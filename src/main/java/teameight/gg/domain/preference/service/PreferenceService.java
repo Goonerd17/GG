@@ -33,12 +33,12 @@ public class PreferenceService {
         if (!isLikedPost(post, user)) {
             createLike(post, user);
             post.increaseLike();
-            return success(LIKE_SUCCESS);
+            return okWithMessage(LIKE_SUCCESS);
         }
 
         removeLike(post, user);
         post.decreaseLike();
-        return success(LIKE_CANCEL);
+        return okWithMessage(LIKE_CANCEL_SUCCESS);
     }
 
     public ApiResponse<?> updateDislike(Long postId, User user) {
@@ -48,12 +48,12 @@ public class PreferenceService {
         if (!isDislikedPost(post, user)) {
             createDislike(post, user);
             post.increaseDislike();
-            return success(DISLIKE_SUCCESS);
+            return okWithMessage(DISLIKE_SUCCESS);
         }
 
         removeDislike(post, user);
         post.decreaseDislike();
-        return success(DISLIKE_CANCEL);
+        return okWithMessage(DISLIKE_CANCEL_SUCCESS);
     }
 
     private boolean isLikedPost(Post post, User user) {

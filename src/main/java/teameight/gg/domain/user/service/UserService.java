@@ -35,7 +35,7 @@ public class UserService {
         User user = new User(username, password, role);
         userRepository.save(user);
 
-        return success(USER_SIGNUP_SUCCESS);
+        return okWithMessage(USER_SIGNUP_SUCCESS);
     }
 
     // 회원 중복 확인

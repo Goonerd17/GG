@@ -28,21 +28,21 @@ public class CommentService {
         Comment comment = new Comment(commentRequestDto, user);
         findPost(postId).addComment(comment);
         commentRepository.save(comment);
-        return success(COMMENT_CREATE_SUCCESS);
+        return okWithMessage(COMMENT_CREATE_SUCCESS);
     }
 
     public ApiResponse<?> updateComment(Long commentId, CommentRequestDto commentRequestDto, User user) {
         Comment comment = findComment(commentId);
         checkUsername(commentId, user);
         comment.update(commentRequestDto);
-        return success(COMMENT_UPDATE_SUCCESS);
+        return okWithMessage(COMMENT_UPDATE_SUCCESS);
     }
 
     public ApiResponse<?> deleteComment(Long commentId, User user) {
         Comment comment = findComment(commentId);
         checkUsername(commentId, user);
         commentRepository.delete(comment);
-        return success(COMMENT_DELETE_SUCCESS);
+        return okWithMessage(COMMENT_DELETE_SUCCESS);
     }
 
     @Transactional

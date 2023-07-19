@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = jwtProvider.createToken(username, role);
         jwtProvider.addJwtHeader(token, response);
 
-        ApiResponse<?> apiResponse = successWithData(USER_LOGIN_SUCCESS);
+        ApiResponse<?> apiResponse = okWithMessage(USER_LOGIN_SUCCESS);
 
         String jsonResponse = objectMapper.writeValueAsString(apiResponse);
         response.setContentType("application/json");

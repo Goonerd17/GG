@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 public class ApiResponse<T>{
 
     private boolean success;
-    private T data;
+    private T info;
     private ErrorResponse error;
 
-    public ApiResponse(boolean success, T data, ErrorResponse error) {
+    public ApiResponse(boolean success, T info, ErrorResponse error) {
         this.success = success;
-        this.data = data;
+        this.info = info;
         this.error = error;
     }
 }
