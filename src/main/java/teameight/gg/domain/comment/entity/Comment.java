@@ -8,6 +8,7 @@ import teameight.gg.domain.post.entity.Post;
 import teameight.gg.domain.user.entity.User;
 import teameight.gg.global.utils.Timestamped;
 
+import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -20,7 +21,7 @@ public class Comment extends Timestamped {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -30,7 +31,7 @@ public class Comment extends Timestamped {
     @Column(name = "username", nullable = false)
     private String username;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 

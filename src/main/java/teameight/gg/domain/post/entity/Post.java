@@ -3,6 +3,9 @@ package teameight.gg.domain.post.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import teameight.gg.domain.comment.entity.Comment;
 import teameight.gg.domain.post.dto.PostRequestDto;
@@ -15,6 +18,7 @@ import java.util.List;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.PROTECTED;
+import static org.hibernate.annotations.FetchMode.*;
 import static org.hibernate.annotations.OnDeleteAction.*;
 
 @Entity
@@ -36,6 +40,7 @@ public class Post extends Timestamped {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Fetch(SUBSELECT)
     @OneToMany(mappedBy = "post", cascade = ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
