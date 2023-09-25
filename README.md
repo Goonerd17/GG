@@ -21,66 +21,62 @@
 
 ### 3. 기술스택
 
-<img src="https://img.shields.io/badge/OpenJDK-232F3E?style=for-the-badge&logo=OpenJDK&logoColor=white"/> <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"> <img src="https://img.shields.io/badge/Springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white"> <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/> <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/Querydsl-4479A1?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/OpenJDK-232F3E?style=for-the-badge&logo=OpenJDK&logoColor=white"/> <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"> <img src="https://img.shields.io/badge/Springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white"> <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/> <img src="https://img.shields.io/badge/Querydsl-4479A1?style=for-the-badge"/>
+
+
 ### 4. 트러블 슈팅
 
-### 1-1)  this.createdAt = story.getCreatedAt();에서 getCreatedAt() 오류 발생
+### 1-1) CORS
 
-- Application에서 @EnableJpaAuditing를 추가하지 않아 발생 + 오타(createAt) → 추가 및 수정 후 정상적으로 작동
+- 첫 프론트엔드와의 협업과정에서 CORS 에러가 발생했습니다.
+- 요청 리소스의 정보를 작성하고 이를 허용하도록 설정해야했는데, 해당 정보를 설정하는 별도의 class 생성 또는 Spring Security의 수동 빈 등록의 방법이 있었는데, 최대한 Spring Security를 활용해보고자 하는 생각에서 후자를 선택했습니다.
+- 리소스에 대한 정보를 적어도 CORS가 해결되지 않는 문제가 발생했는데 이는 preflight 요청 메서드를 명시하지 않았기 때문에 발생하는 에러였습니다.
+- 따라서 OPTIONS 메서드를 허용하고 토큰이 클라이언트에게 반환될 수 있도록 exposedHeader도 추가해주는 과정까지 마무리하였습니다.
 
 
-### 1-2) 데이터베이스에는 변경사항이 정상적으로 작동되는데 응답은 400상태코드와 응답값 전달되지 않은 현상
+### 1-2) Response 타입 변경과 정적 메서드 이용
 
-- 좋아요 요청 후 클라이언트에게 내려주는 데이터가 정상적으로 나오지 않은 문제
-- JSON으로 파싱되는데 있어서 Dto의 NoArgsConstructor가 접근레벨이 Protected로 설정되어 있었기에 다른 패키지에서 기본생성자 사용이 불가능
-- 이로 인해 JSON으로 데이터가 정상적으로 나오지 않게됨 → 접근제어레벨 수정
+- 단순히 Dto를 응답하지 않고 요청 성공 여부, Dto, 에러 여부와 에러 메세지를 통합해서 프론트엔드에게 전송하고자 했습니다.
+- 제네릭을 이용해 응답에 담길 성공 여부와 데이터, 에러를 종합하는 ApiResponse<T>를 생성했습니다.
+- ApiResponse에 실제 값들을 담을 수 있는 ResponseUtil 클래스를 만들고 정적 메서드로 기능들을 작성했습니다.
+- 이를 통해 ResponseUtil 클래스의 객체를 직접 생성하지 않아도, 해당 클래스의 메서드를 직접 호출할 수 있습니다.
+- 또, 요청 성공 여부, Dto, 에러 여부와 같이 입력 값을 기반으로 결과를 반환하는 기능을 가지기 때문에 ResponseUtils 는 상태를 유지할 필요가 없습니다.
+- 정적 메서드로 만들어진 클래스는 해당 클래스 이름을 통해 그 기능을 명확하게 알 수 있고, 필요하다면 static import를 통해 코드를 보다 간결하게 유지할 수 있습니다.
+- 마지막으로 인스턴스의 생성이 불필요하므로 해당 기능과 관련된 객체 생성으로 인해 발생할 수 있는 객체 관리, 메모리 사용이 줄어들어 사용에 있어 부담이 줄어드는 이점을 얻을 수 있었습니다.
 
-### 1-3) PageImpl
+### 1-3) 동적 쿼리
 
-- 한 페이지에 요청하는 size만큼의 데이터만 내려주는 게 아닌 전체 데이터 개수, 전체 페이지 개수, 첫 페이지 여부와 같이 페이지에 대한 정보를 프론트에게 같이 넘겨주는 게 더 합리적이라고 생각
-- PageImpl을 사용했으나, totalPages에 대한 정보가 계속 1로 나오는 문제 발생
-- 기존에는 PageImpl의 파라미터에는 실제 데이터, pageable, page.getTotalPages를 입력하였으나 전체 페이지개수가 아닌 page.getTotalElements를 넘겨야 전체 페이지 개수를 확인 가능
+- 검색은 기본적으로 게시글의 제목과 작성자를 바탕으로 기능하는 방식을 구상하였습니다. 어떤 값에 null이 들어와도 다른 기준을 바탕으로, 혹은 두 값 모두 null이라면 모든 게시글을 반환하는 로직이 필요했습니다.
+- JPQL 이나 네이티브쿼리를 작성하기에는 작성 과정에 있어 많이 헷갈리고, 컴파일 시점에서 에러를 잡을 수 없다는 큰 단점이 있어 Querydsl을 선택했습니다.
+- 검색 조건의 변경을 염두에 두고 요구사항 변경에도 조건 간의 조합으로 유연성의 이점을 봉줄 수 있는 BooleanExpression 타입을 기반으로 검색기능을 구현했습니다.
+- 추가적으로 검색과정에서 Post 엔티티를 찾고 반복문을 사용하여 Dto에 데이터를 담아줬는데 @QueryProjections를 사용하여 직접 select절에서 해당 값들을 Dto에 담아주었습니다. 서비스의 특성을 고려했을 때, 게시글 조회 상황에서 댓글까지 노출할 필요가 없다고 생각했기 때문에 comment를 제외한 다른 값들을 담는 개별적인 Dto를 사용하는 게 좋겠다고 생각을 했습니다. 이를 바탕으로 @QueryProjections를 사용하게 되었습다.
 
-### 1-4) 속도 이슈
+### 1-4) 예외 처리
 
-- 코드 자체의 문제는 없어보였지만 프론트엔드로 내려가는 데이터의 속도가 느리다는 피드백을 받게됨
-- system.currenttimemillis()를 컨트롤러 계층, 서비스 계층에 로그를 남김으로써 해당 데이터 처리 속도를 확인
-- 코드의 데이터 처리에는 큰 문제가 없다는 것을 확인하고 AWS 인프라 설정을 확인하였고 region 설정이 잘못되어 있었음을 확인
-- 이를 수정 후 정상적인 응답속도가 되었음을 확인
+- 코드의 일관성과 예외메세지를 일괄적으로 처리할 수 있도록 재구성하고자 했습니다.
+- Enum을 통해 해당 예외 메세지들을 한 곳에서 관리하고 IllegalargumentException을 상속받는 InvalidConditionException을 생성하였습니다.
+- 다만 모든 예외를 커스텀하여 처리하는 것보다 해당 예외의 원인이 이미 자바에서 제공하는 예외로 설명이 가능하다면, 이를 활용하는 것이 더 효율적이라는 걸 느낄 수 있었습니다.
+- 구체적인 설명이 필요하거나, 서비스에서 중요하게 다루어져야 하는 예외라면 이를 커스텀예외로 처리하는 방식을 선택하고자 했고, 해당 프로젝트의 규모는 작다고 판단했기에 크게 InvalidCondtionException과 UploadException로 나누고 예외처리를 진행하였습니다.
 
-### 1-5) 소셜로그인
+### 1-5) 이미지 데이터 핸들링을 위한 S3와 multipart 사용
 
-- Oauth2.0 적용실패 - 강의에서 배운 것을 기반으로 먼저 소셜로그인을 구현 한 뒤, 정상 작동을 확인하고 Oauth2.0으로 구현하려고 계획
-- 소셜로그인 redirect_url 부분을 제대로 이해하고 적용하지 못해서 정상작동하지 않았고 통신관련 다른 트러블에 우선순위가 밀려서 Oauth를 적용하지 못함
-- 통신관련 다른 트러블 : 403에러가 CORS나 토큰쪽으로만 인식되는데 데이터를 보내고 받는 쪽의 DTO가 일치하지 않는 경우에도 403 오류가 발생함
+- 처음에는 단순히 이미지URL을 직접 String으로 받아 DB에 저장하려고 했습니다. 하지만 이미지 URL이 너무 긴 경우 DB 저장에서 오류가 발생하고, 만약 해당 URL에서 이미지의 변경,손상이 일어난다면 게시판의 이미지도 같은 상태로 변경될 수 있습니다. 이러한 점에서 유저에게 큰 불편을 초래할 수 있다고 판단하였기에 파일 자체를 저장할 수 있는 방법을 찾아야했습니다.
+- 단건 이미지 파일 업로드로 프로젝트를 진행하겠다고 프론트엔드에서 이야기했기 때문에 파일과 JSON을 동시에 받는 방식을 찾게 되었고, @RequestPart를 이용하여 이미지 파일 데이터를 받았습니다.
+- S3에 저장까지는 가능했으나 수정,삭제 부분이 생각보다 까다로웠지만, 리팩토링을 통하여 확장자 추출, 고유 파일명 생성, 객체 키 추출 등을 진행하였습니다.
+- 이미지 수정의 경우, 새롭게 전송된 이미지를 S3에 저장한 후 DB에 저장되어 있는 기존 이미지의 URL에서 객체 키를 추출한 뒤 S3에 해당 객체를 삭제하는 방식으로 진행하여 기능을 구현하였습니다.
+  
 
-### 2) 고민
+### 1-6) n + 1 문제와 카르테시안 곱
 
-### 2-1) 반복 접근하고, 변경이 잘 되지 않는 데이터를 캐싱에 사용할 수 있는 점
+- Post 엔티티의 List로 존재하는 Comment 엔티티를 조회할 때 n + 1 문제가 발생할 것이 예상되었으므로 이 부분에 대해서 left join fetch를 사용했습니다.
+- 실제 쿼리를 날려보니 comment의 username을 조회하기 위해 user들에 대해서도 쿼리를 날리게 되어 comment를 작성한 user가 5명일 경우 6번의 쿼리가 발생하는 문제가 발생하였습니다.
+- 프로젝트 막바지에 해당 문제를 확인해서 이에 대해 미리 포착하지 못한 불찰이 아쉬웠지만, 최대한 주어진 시간 내에 해당 문제를 해결할 수 있는 방법을 찾고자 했습니다.
+- "left join fetch p.commentList cl join fetch cl.user" 쿼리로 기존 문제를 해결할 수 있었지만, 이러한 방식은 실제 row는 10개에 불과한 데이터가 반복적인 join fetch로 인해 row가 뻥튀기 되고 20,30, 혹은 그 이상의 반복되는 row를 가져올 수 있는 카르테시안 곱 문제가 발생할 수 있다고 생각했습니다.
+- 따라서 컬렉션의 요소들을 서브쿼리로 이용하여 가져오는 방법인 @Fetch를 이용하여 post에 대한 쿼리 한 번, comment에 대한 쿼리 한 번(서브쿼리 이용)을 이용해 데이터를 가져올 수 있었습니다.
+- 쿼리 자체의 수는 늘어났지만 과도한 데이터 부풀림 현상을 방지할 수 있기 때문에 기존 해결 방법보다 더 합리적이라고 생각했습니다.
 
-- 리프레시 토큰이 적절한 대상이 될 수 있다고 생각하고 이를 레디스를 활용하는 법을 고민
-- 그러나 레디스를 적용하고 실제 사용에 있어 꽤 어려움을 겪었음. 정확히 레디스를 어떤 식으로 설정하고 사용해야하는지에 대한 이해가 부족했던 것이 아쉬움
 
-### 2-2) 특정 게시물의 전체 및 상세 조회에서 해당 엔티티의 연관관계를 맺은 user의 모든 정보를 select절에서 가져오는 문제
+### 1-7) 협업
 
-- 필요한 건 해당 user의 username인데 user 테이블에 존재하는 성별,이메일, 카카오ID 와 같은 칼럼들도 한 번에 조회하는 문제점
-- 프로젝션을 사용해서 원하는 컬럼만 가져올 수 있다고 생각하였으나 새로운 Dto를 생성해야한다는 문제
-- 이러한 문제는 해당 Dto의 내부 클래스를 이용하여 해결하면 좋았을 것 같다고 생각
-
-### 2-3) 쿼리Dsl
-
-- 검색 데이터를 가져오는 과정에서 연관관계를 맺은 Comment의 데이터는 검색 후 상세페이지에 들어가서 조회할 수 있는 것이 합리적이라는 생각
-- 지연로딩을 활용하기 위해 해당 엔티티의 ResponseDto에서 생성자 오버로딩을 이용
-- @QueryProjection을 이용하여 Dto도 Q클래스를 생성하여 사용.
-- 프록시상태 Comment에 엔티티 조회를 요청하지 않음. 이를 통해 불필요한 쿼리들을 줄일 수 있었음
-
-### 2-4) 홈 화면 구성에서 새로운 Service 계층을 만들고 해당 HomeService가 StoryRepository와 JobRepository에 의존
-
-- 그 차이는 미미하겠지만 HomeService에서 직접적으로 해당 Repository 또는 해당 엔티티의 Service 계층에 접근하는 방법은 어땠을까 고민
-- 코드의 변경이 발생하였을 때, HomeService의 변경도 일어날 수 있다는 점
-- 의존성을 최대한 줄이는 면에서 HomeController에서 직접 Repository를 가져오는 게 어땠을까라는 고민이 생김
-
-### 2-5) page에 대한 정보를 받을 때 고민
-
-- RequestParam 형식으로 page에 대한 정보를 받아야할지, @PathVariable로 page를 받아야할지 고민
-- 첫 API 설계시에는 쿼리파라미터로 약속했으나 해당 문제에 대해서 뭐가 더 RESTful한지에 대한 명확한 기준을 알 수 없었음
+- 처음 프론트엔드와의 협업은 생각보다 쉽지 않았습니다. 각 분야에 대해서 깊이있는 이해가 있지 않는 이상 빈번하고 생산성있는 의사소통이 프로젝트를 진행하는 데 중요했습니다.
+- 또한 분명하고 이해하기 쉬운 API 명세는 꼭 필요하며 명세 작성 과정은 팀원들이 모두 공유하고 참여해야한다는 것도 알 수 있었습니다.
