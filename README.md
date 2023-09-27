@@ -25,14 +25,15 @@
 ### 2 프로젝트 소개
 
 <details>
-<summary> 주요기능 </summary>
+<summary> 담당 역할 </summary>
 
-|페이지|담당자|기능|
+|역할|담당자|기능|
 |:--|:--|:--|
 |회원가입, 로그인페이지|유시환,김광균|회원가입, 로그인|
 |메인페이지|유시환|게시글 조회|
 |검색페이지|유시환|작성내용, 작성자 검색|
 |상세페이지|유시환,이성목,김광균|게시글 작성,수정,삭제 댓글 작성,수정,삭제|
+|배포|유시환|서버 배포|
 </details>
 
 <details>
@@ -119,12 +120,38 @@
 
 ### 5 트러블 슈팅
 
-### 1-1) CORS
+<details>
+<summary>1. CORS </summary>  
+  
+  - 프론트엔드와 통신과정에서 CORS 에러가 반복적으로 발생했습니다.
+    
+  - 해결과정에서 별도의 class 생성 또는 Spring Security의 수동 빈 등록의 방법이 있었는데, 최대한 Spring Security를 활용해보고자 하는 생각에서 후자를 이용해 요청 리소스의 정보를 작성하고 이를 허용하도록 설정했습니다.
 
-- 첫 프론트엔드와의 협업과정에서 CORS 에러가 발생했습니다.
-- 요청 리소스의 정보를 작성하고 이를 허용하도록 설정해야했는데, 해당 정보를 설정하는 별도의 class 생성 또는 Spring Security의 수동 빈 등록의 방법이 있었는데, 최대한 Spring Security를 활용해보고자 하는 생각에서 후자를 선택했습니다.
-- 리소스에 대한 정보를 적어도 CORS가 해결되지 않는 문제가 발생했는데 이는 preflight 요청 메서드를 명시하지 않았기 때문에 발생하는 에러였습니다.
-- 따라서 OPTIONS 메서드를 허용하고 토큰이 클라이언트에게 반환될 수 있도록 exposedHeader도 추가해주는 과정까지 마무리하였습니다.
+  - 그럼에도 CORS가 해결되지 않았는데 이는 preflight 요청 메서드를 명시하지 않았기 때문에 발생하는 에러였고, 이를 위해  OPTIONS 메서드 허용과 exposedHeader를 설정하여 프론트엔드와 원활한 통신이 가능했습니다.
+```java
+@Configuration
+@RequiredArgsConstructor
+@EnableWebSecurity
+public class WebSecurityConfig {
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        config.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT","OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.addExposedHeader("*");
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+}
+```
+
+</details>
 
 
 ### 1-2) Response 타입 변경과 정적 메서드 이용
