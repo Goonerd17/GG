@@ -1,14 +1,28 @@
 # 게임 소개 및 리뷰 사이트
-<img src='./src/main/resources/images/GGmain.png' width="100%">
+<img src='./src/main/resources/images/GGmain.png' width="100%">  
 
+## 목차
+[프로젝트 개요](#1-프로젝트-개요)  
 
-### 1. 프로젝트 개요
+[프로젝트 소개](#2-프로젝트-소개)  
+
+[기술스택](#3-기술스택)  
+
+[기술적 의사결정](#4-기술적-의사결정)  
+
+[트러블슈팅](#5-트러블-슈팅)  
+
+* * *
+
+### 1 프로젝트 개요
 
 - 팀원 : 유시환, 김광균, 이성목
 - 기간 : 2022년 07월 16일 ~ 07월 21일, 5일 간 진행
 - 이미지 업로드, 검색이 가능한 게임 소개 및 리뷰 사이트 프로젝트입니다.
 
-### 2. 프로젝트 소개
+* * *  
+
+### 2 프로젝트 소개
 
 페이지별 주요기능
 
@@ -20,18 +34,77 @@
 |상세페이지|유시환,이성목,김광균|게시글 작성,수정,삭제 댓글 작성,수정,삭제|  
 
 <details>
-<summary>메인페이지</summary>  
-   - <img src='./src/main/resources/images/GGmain.png' width="80%">
+<summary> 회원가입, 로그인 페이지 </summary>  
+  
+  - 회원가입, 로그인
+    
+  - <img src='./src/main/resources/images/GGsignuplogin.png' width="70%">
 </details>
 
+<details>
+<summary> 메인페이지 </summary>  
+  
+  - 게시물 조회, 검색
+    
+  - <img src='./src/main/resources/images/GGmain.png' width="70%">
+</details>
 
+<details>
+<summary> 검색페이지 </summary>  
+  
+  - 제목 검색
+    
+  - <img src='./src/main/resources/images/GGsearchtitle.png' width="70%">  
 
-### 3. 기술스택
+  - 작성자 검색
+    
+  - <img src='./src/main/resources/images/GGsearchwriter.png' width="70%">
+</details>
+
+<details>
+<summary> 검색페이지 </summary>  
+  
+  - 게시글 작성,수정,삭제 댓글 작성,수정,삭제
+    
+  - <img src='./src/main/resources/images/GGcreatepost.png' width="70%">  
+
+  - <img src='./src/main/resources/images/GGcreatecomment.png' width="70%">  
+</details>  
+
+* * *  
+
+### 3 기술스택
 
 <img src="https://img.shields.io/badge/OpenJDK-232F3E?style=for-the-badge&logo=OpenJDK&logoColor=white"/> <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"> <img src="https://img.shields.io/badge/Springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white"> <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/> <img src="https://img.shields.io/badge/Querydsl-4479A1?style=for-the-badge"/>
 
+### 4 기술적 의사결정  
 
-### 4. 트러블 슈팅
+<details>
+<summary><img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"/> <img src="https://img.shields.io/badge/Springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white"/> <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/></summary>  
+  
+  - 다양한 라이브러리를 가지고 있는 자바 기반의 프레임워크입니다.
+        
+  - 스프링 부트는 복잡한 초기 설정을 간편하게 제공한다는 점에서 높은 사용성을 보이기 때문에 선택했습니다.
+</details>
+
+<details>
+<summary><img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/> </summary>  
+
+    
+  - 기본적인 CRUD 기능과 유저 및 게시글 데이터를 처리하기에 용이한 것은 관계형 데이터베이스라고 생각했습니다.
+    
+  - 따라서 관계형 데이터베이스 중에서 가장 익숙하고, 오픈 소스이기 때문에 무료로 사용할 수 있는 MySQL을 선택했습니다.
+</details>
+
+<details>
+<summary><img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/> </summary>  
+  
+  - 가상 컴퓨터를 구매하여 FileZilla를 이용하여 쉽게 배포가 가능하고, 사용한 만큼 지불하는 방식이기 때문에 EC2를 선택했습니다.
+      
+  - MySQL을 AWS RDS에서 지원하기도 하고, DB 관리를 자동화해주기 때문에 편리성면에서 RDS를 선택했습니다.
+</details>  
+
+### 5 트러블 슈팅
 
 ### 1-1) CORS
 
