@@ -24,47 +24,45 @@
 
 ### 2 프로젝트 소개
 
-페이지별 주요기능
+<details>
+<summary> 주요기능 </summary>
 
 |페이지|담당지|기능|
 |:--|:--|:--|
 |회원가입, 로그인페이지|유시환,김광균|회원가입, 로그인|
 |메인페이지|유시환|게시글 조회|
 |검색페이지|유시환|작성내용, 작성자 검색|
-|상세페이지|유시환,이성목,김광균|게시글 작성,수정,삭제 댓글 작성,수정,삭제|  
+|상세페이지|유시환,이성목,김광균|게시글 작성,수정,삭제 댓글 작성,수정,삭제|
+</details>
 
 <details>
 <summary> 회원가입, 로그인 페이지 </summary>  
-  
-  - 회원가입, 로그인    
-   <img src='./src/main/resources/images/GGsignuplogin.png' width="70%">
+  <img src='./src/main/resources/images/GGsignuplogin.png' width="70%">  
+  - 회원가입, 로그인 
 </details>
 
 <details>
 <summary> 메인페이지 </summary>  
-  
+  <img src='./src/main/resources/images/GGmain.png' width="70%">
   - 게시물 조회, 검색    
-   <img src='./src/main/resources/images/GGmain.png' width="70%">
 </details>
 
 <details>
 <summary> 검색페이지 </summary>  
+   <img src='./src/main/resources/images/GGsearchtitle.png' width="70%"> 
+  - 제목 검색  
   
-  - 제목 검색    
-   <img src='./src/main/resources/images/GGsearchtitle.png' width="70%">  
-
-  - 작성자 검색    
    <img src='./src/main/resources/images/GGsearchwriter.png' width="70%">
+  - 작성자 검색    
 </details>
 
 <details>
-<summary> 검색페이지 </summary>  
-  
-  - 게시글 작성,수정,삭제    
-   <img src='./src/main/resources/images/GGcreatepost.png' width="70%">  
+<summary> 상세페이지 </summary>    
+  <img src='./src/main/resources/images/GGcreatepost.png' width="70%">
+  - 게시글 작성,수정,삭제  
 
+  <img src='./src/main/resources/images/GGcreatecomment.png' width="70%">
   - 댓글 작성,수정,삭제   
-   <img src='./src/main/resources/images/GGcreatecomment.png' width="70%">
 </details>  
 
 * * *  
