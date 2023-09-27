@@ -1,5 +1,5 @@
 # 게임 소개 및 리뷰 사이트
-<img src='./src/main/resources/images/GoodGame.png' width="100%">
+<img src='./src/main/resources/images/GGmain.png' width="100%">
 
 
 ### 1. 프로젝트 개요
@@ -17,7 +17,13 @@
 |회원가입, 로그인페이지|유시환,김광균|회원가입, 로그인|
 |메인페이지|유시환|게시글 조회|
 |검색페이지|유시환|작성내용, 작성자 검색|
-|상세페이지|유시환,이성목,김광균|게시글 작성,수정,삭제 댓글 작성,수정,삭제|
+|상세페이지|유시환,이성목,김광균|게시글 작성,수정,삭제 댓글 작성,수정,삭제|  
+
+<details>
+<summary>메인페이지</summary>  
+   - <img src='./src/main/resources/images/GGmain.png' width="80%">
+</details>
+
 
 
 ### 3. 기술스택
