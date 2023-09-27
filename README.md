@@ -36,39 +36,35 @@
 <details>
 <summary> 회원가입, 로그인 페이지 </summary>  
   
-  - 회원가입, 로그인
-    
-  - <img src='./src/main/resources/images/GGsignuplogin.png' width="70%">
+  - 회원가입, 로그인    
+   <img src='./src/main/resources/images/GGsignuplogin.png' width="70%">
 </details>
 
 <details>
 <summary> 메인페이지 </summary>  
   
-  - 게시물 조회, 검색
-    
-  - <img src='./src/main/resources/images/GGmain.png' width="70%">
+  - 게시물 조회, 검색    
+   <img src='./src/main/resources/images/GGmain.png' width="70%">
 </details>
 
 <details>
 <summary> 검색페이지 </summary>  
   
-  - 제목 검색
-    
-  - <img src='./src/main/resources/images/GGsearchtitle.png' width="70%">  
+  - 제목 검색    
+   <img src='./src/main/resources/images/GGsearchtitle.png' width="70%">  
 
-  - 작성자 검색
-    
-  - <img src='./src/main/resources/images/GGsearchwriter.png' width="70%">
+  - 작성자 검색    
+   <img src='./src/main/resources/images/GGsearchwriter.png' width="70%">
 </details>
 
 <details>
 <summary> 검색페이지 </summary>  
   
-  - 게시글 작성,수정,삭제 댓글 작성,수정,삭제
-    
-  - <img src='./src/main/resources/images/GGcreatepost.png' width="70%">  
+  - 게시글 작성,수정,삭제    
+   <img src='./src/main/resources/images/GGcreatepost.png' width="70%">  
 
-  - <img src='./src/main/resources/images/GGcreatecomment.png' width="70%">  
+  - 댓글 작성,수정,삭제   
+   <img src='./src/main/resources/images/GGcreatecomment.png' width="70%">
 </details>  
 
 * * *  
