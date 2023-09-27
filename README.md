@@ -54,62 +54,7 @@
   - 제목 검색  
 
    <img src='./src/main/resources/images/GGsearchwriter.png' width="70%">
-  - 작성자 검색    
-</details>
-
-<details>
-<summary> 상세페이지 </summary>    
-  <img src='./src/main/resources/images/GGcreatepost.png' width="70%">
-  - 게시글 작성,수정,삭제  
-
-  <img src='./src/main/resources/images/GGcreatecomment.png' width="70%">
-  - 댓글 작성,수정,삭제   
-</details>  
-
-
-### 3 기술스택
-
-<img src="https://img.shields.io/badge/OpenJDK-232F3E?style=for-the-badge&logo=OpenJDK&logoColor=white"/> <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"> <img src="https://img.shields.io/badge/Springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white"> <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/> <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/Querydsl-4479A1?style=for-the-badge"/>  
-
-* * *  
-
-### 4 기술적 의사결정  
-
-<details>
-<summary> <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"/> <img src="https://img.shields.io/badge/Springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white"/> <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/></summary>  
-
-  - 팀원들이 모두 사용할 줄 아는 프레임워크였습니다.
-
-  - 익숙한 프레임워크를 사용하는 게 전체적인 프로젝트 진행에 있어서 백엔드 간의 소통이 더 원활할 것이라 판단했습니다.
-</details>
-
-<details>
-<summary> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/> </summary>  
-      
-  - 사용 편의성, 공동작업 용이성 등을 고려했을 때 관계형 데이터베이스가 적합하다고 생각했습니다.
-
-  - 다른 데이터베이스에 비해 어느정도 사용법을 알고 있는 MySQL을 선택하여 빠르고 원활한 프로젝트 진행을 고려했습니다.
-</details>
-
-<details>
-<summary> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/> <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazonec2&logoColor=white"/> </summary>  
-
-  - 가상 컴퓨터를 구매하여 FileZilla를 이용하여 쉽게 배포가 가능하고, 사용한 만큼 지불하는 방식이기 때문에 EC2를 선택했습니다.
-
-  - MySQL을 AWS RDS에서 지원하기도 하고, DB 관리를 자동화해주기 때문에 편리성면에서 RDS를 선택했습니다.
-
-  - 이미지 파일을 따로 저장할 수 있는 저장소의 존재가 필요했고, AWS S3 객체 스토리지는 높은 가용성, 성능, 확장성을 가지고 있기 때문에 선택했습니다.
-</details>  
-
-<details>
-<summary> <img src="https://img.shields.io/badge/Querydsl-4479A1?style=for-the-badge"/> </summary>  
-
-  - 검색 서비스를 제공하기 위해서는 쿼리를 작성하고 이를 활용해야한다고 판단했습니다.
-
-  - JPQL은 컴파일 시점에서 에러를 잡을 수 없고, 비즈니스 내 검색 조건이 추가될수록 해당 쿼리의 내용이 복잡해지고 파악하기 어렵다는 단점이 있어 Querydsl을 선택했습니다. 
-</details>  
-
-* * *  
+  - 작성자 점
 
 <details>
 <summary>1. CORS </summary>  
