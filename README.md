@@ -200,43 +200,65 @@ public class ResponseUtils {
 <details>
 <summary>3. 동적 쿼리 </summary>  
   
-  - 프론트엔드와 통신과정에서 CORS 에러가 반복적으로 발생했습니다.
+  - 게시글의 제목과 작성자로 검색할 수 있는 서비스를 계획했습니다. 어떤 값에 null이 들어와도 다른 기준을 바탕으로, 혹은 두 값 모두 null이라면 모든 게시글을 반환하는 로직이 필요했습니다.
     
-  - 해결과정에서 별도의 class 생성 또는 Spring Security의 수동 빈 등록의 방법이 있었는데, 최대한 Spring Security를 활용해보고자 하는 생각에서 후자를 이용해 요청 리소스의 정보를 작성하고 이를 허용하도록 설정했습니다.
+  - JPQL 이나 네이티브쿼리를 사용할 때에는 복잡한 쿼리일수록 그 내용을 파악하기 어렵고, 휴먼에러의 가능성이 높아지기 때문에, Querydsl을 선택했습니다.
 
-  - 그럼에도 CORS가 해결되지 않았는데 이는 preflight 요청 메서드를 명시하지 않았기 때문에 발생하는 에러였고, 이를 위해  OPTIONS 메서드 허용과 exposedHeader를 설정하여 프론트엔드와 원활한 통신이 가능했습니다.
+  - 비즈니스적으로 검색 조건의 변경을 염두에 두고 조건의 조합으로 유연성있는 쿼리 작성이 가능한 BooleanExpression 타입을 사용했습니다.
     
 ```java
-@Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity
-public class WebSecurityConfig {
+public class PostRepositoryCustomImpl implements PostRepositoryCustom{
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
+    private final JPAQueryFactory query;
 
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        config.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT","OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("*"));
-        config.addExposedHeader("*");
-        config.setAllowCredentials(true);
+    @Override
+    public Slice<PostResponseDto> serachPostBySlice(PostSearchCondition condition, Pageable pageable) {
+        List<PostResponseDto> result = query
+                .select(new QPostResponseDto(
+                        post.id,
+                        post.title,
+                        post.username,
+                        post.content,
+                        post.createdAt,
+                        post.image,
+                        post.liked,
+                        post.disliked
+                ))
+                .from(post)
+                .where(
+                        usernameLike(condition.getUsername()),
+                        titleLike(condition.getTitle()))
+                .orderBy(post.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
+        return checkEndPage(pageable, result);
+    }
+
+    private BooleanExpression usernameLike(String usernameCond) {
+        return hasText(usernameCond) ? post.username.like("%" + usernameCond + "%") : null;
+    }
+
+    private BooleanExpression titleLike(String titleCond) {
+        return hasText(titleCond) ? post.title.like("%" + titleCond + "%") : null;
+    }
+
+    private static SliceImpl<PostResponseDto> checkEndPage(Pageable pageable, List<PostResponseDto> content) {
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            hasNext = true;
+            content.remove(pageable.getPageSize());
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 }
 ```
+
+  - 추가적으로 Post 엔티티를 찾은 뒤, 반복문을 사용하여 Dto에 데이터를 담았는데, @QueryProjections를 사용하여 직접 select절에서 해당 값들을 Dto에 담아주는 방식으로 변경했습니다. 서비스의 특성을 고려했을 때, 게시글 조회 상황에서 댓글까지 노출할 필요가 없다고 생각했고, n + 1 문제를 해결하고자 @QueryProjections를 사용했습니다.
 </details>  
 
-
-### 1-3) 동적 쿼리
-
-- 검색은 기본적으로 게시글의 제목과 작성자를 바탕으로 기능하는 방식을 구상하였습니다. 어떤 값에 null이 들어와도 다른 기준을 바탕으로, 혹은 두 값 모두 null이라면 모든 게시글을 반환하는 로직이 필요했습니다.
-- JPQL 이나 네이티브쿼리를 작성하기에는 작성 과정에 있어 많이 헷갈리고, 컴파일 시점에서 에러를 잡을 수 없다는 큰 단점이 있어 Querydsl을 선택했습니다.
-- 검색 조건의 변경을 염두에 두고 요구사항 변경에도 조건 간의 조합으로 유연성의 이점을 봉줄 수 있는 BooleanExpression 타입을 기반으로 검색기능을 구현했습니다.
-- 추가적으로 검색과정에서 Post 엔티티를 찾고 반복문을 사용하여 Dto에 데이터를 담아줬는데 @QueryProjections를 사용하여 직접 select절에서 해당 값들을 Dto에 담아주었습니다. 서비스의 특성을 고려했을 때, 게시글 조회 상황에서 댓글까지 노출할 필요가 없다고 생각했기 때문에 comment를 제외한 다른 값들을 담는 개별적인 Dto를 사용하는 게 좋겠다고 생각을 했습니다. 이를 바탕으로 @QueryProjections를 사용하게 되었습다.
 
 ### 1-4) 예외 처리
 
